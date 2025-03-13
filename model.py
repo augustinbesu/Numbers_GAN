@@ -9,7 +9,7 @@ class Generator(nn.Module):
         # Tamaño inicial después de la primera capa
         self.init_size = 7
         
-        # Capa de entrada: latent_dim -> 256*7*7 (aumentado de 128 a 256)
+        # Capa de entrada: latent_dim -> 256*7*7
         self.l1 = nn.Sequential(
             nn.Linear(latent_dim, 256 * self.init_size ** 2)
         )
@@ -48,15 +48,15 @@ class Discriminator(nn.Module):
     def __init__(self, channels=1):
         super(Discriminator, self).__init__()
 
-        # Secuencia de capas convolucionales mejoradas
+        # Secuencia de capas convolucionales
         self.conv_blocks = nn.Sequential(
             # 28x28 -> 14x14
-            nn.Conv2d(channels, 64, 4, 2, 1),  # Aumentado de 32 a 64 filtros
+            nn.Conv2d(channels, 64, 4, 2, 1),
             nn.LeakyReLU(0.2, inplace=True),
             nn.Dropout2d(0.25),
             
             # 14x14 -> 7x7
-            nn.Conv2d(64, 128, 4, 2, 1),  # Aumentado de 64 a 128 filtros
+            nn.Conv2d(64, 128, 4, 2, 1),
             nn.BatchNorm2d(128),
             nn.LeakyReLU(0.2, inplace=True),
             nn.Dropout2d(0.25),
@@ -68,19 +68,19 @@ class Discriminator(nn.Module):
             nn.Dropout2d(0.25),
             
             # 4x4 -> 2x2
-            nn.Conv2d(256, 512, 3, 2, 1),  # Aumentado de 256 a 512 filtros
+            nn.Conv2d(256, 512, 3, 2, 1),
             nn.BatchNorm2d(512),
             nn.LeakyReLU(0.2, inplace=True),
             nn.Dropout2d(0.25),
         )
         
-        # Capa de salida para validez (real/falso)
+        # Capa para determinar si la imagen es real o falsa (con sigmoid para GAN clásica)
         self.adv_layer = nn.Sequential(
             nn.Linear(512 * 2 * 2, 1),
             nn.Sigmoid()
         )
         
-        # Capa para clasificación de dígitos mejorada (0-9)
+        # Capa para clasificación de dígitos
         self.aux_layer = nn.Sequential(
             nn.Linear(512 * 2 * 2, 256),
             nn.LeakyReLU(0.2, inplace=True),

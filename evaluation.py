@@ -95,7 +95,7 @@ def generate_evaluation_grid(generator, n_rows=10, n_cols=10):
     plt.savefig(f"{EVALUATION_DIR}/final_grid.png", dpi=300, bbox_inches='tight')
     plt.close()
 
-def plot_training_metrics(G_losses, D_losses, D_real_acc, D_fake_acc):
+def plot_training_metrics(G_losses, D_losses, D_real_scores, D_fake_scores, digit_acc=None):
     """Grafica las métricas de entrenamiento en imágenes separadas para mayor claridad"""
     # Configuración general de estilo
     plt.style.use('seaborn-v0_8-darkgrid')
@@ -152,61 +152,61 @@ def plot_training_metrics(G_losses, D_losses, D_real_acc, D_fake_acc):
     plt.savefig(f"{metrics_dir}/losses.png", dpi=300, bbox_inches='tight')
     plt.close()
     
-    # 2. Gráfico de precisión
+    # 2. Gráfico de puntuaciones del discriminador
     plt.figure(figsize=(12, 8))
     
-    plt.plot(epochs, D_real_acc, 'r-', linewidth=2.5, label='Imágenes Reales')
-    plt.plot(epochs, D_fake_acc, 'm-', linewidth=2.5, label='Imágenes Falsas')
+    plt.plot(epochs, D_real_scores, 'r-', linewidth=2.5, label='Puntuación Real')
+    plt.plot(epochs, D_fake_scores, 'm-', linewidth=2.5, label='Puntuación Falsa')
     
     # Línea de referencia en 0.5 (aleatorio)
     plt.axhline(y=0.5, color='gray', linestyle='--', alpha=0.7, label='Aleatorio (0.5)')
     
     # Añadir líneas de tendencia suavizadas
-    if len(D_real_acc) > 10:
-        window = min(15, len(D_real_acc) // 3 * 2 + 1)
+    if len(D_real_scores) > 10:
+        window = min(15, len(D_real_scores) // 3 * 2 + 1)
         if window % 2 == 0:
             window += 1
-        real_smooth = savgol_filter(D_real_acc, window, 3)
-        fake_smooth = savgol_filter(D_fake_acc, window, 3)
+        real_smooth = savgol_filter(D_real_scores, window, 3)
+        fake_smooth = savgol_filter(D_fake_scores, window, 3)
         plt.plot(epochs, real_smooth, 'r--', linewidth=1.5, alpha=0.7, label='Real (tendencia)')
         plt.plot(epochs, fake_smooth, 'm--', linewidth=1.5, alpha=0.7, label='Falsa (tendencia)')
     
     # Añadir anotaciones para valores máximos
-    max_real_acc = max(D_real_acc)
-    max_real_epoch = D_real_acc.index(max_real_acc) + 1
-    max_fake_acc = max(D_fake_acc)
-    max_fake_epoch = D_fake_acc.index(max_fake_acc) + 1
+    max_real_score = max(D_real_scores)
+    max_real_epoch = D_real_scores.index(max_real_score) + 1
+    max_fake_score = max(D_fake_scores)
+    max_fake_epoch = D_fake_scores.index(max_fake_score) + 1
     
-    plt.annotate(f'Max Real: {max_real_acc:.4f} (Época {max_real_epoch})',
-                xy=(max_real_epoch, max_real_acc), xytext=(max_real_epoch, max_real_acc*0.9),
+    plt.annotate(f'Max Real: {max_real_score:.4f} (Época {max_real_epoch})',
+                xy=(max_real_epoch, max_real_score), xytext=(max_real_epoch, max_real_score*0.9),
                 arrowprops=dict(facecolor='red', shrink=0.05, alpha=0.7),
                 fontsize=12, color='red')
     
-    plt.annotate(f'Max Falsa: {max_fake_acc:.4f} (Época {max_fake_epoch})',
-                xy=(max_fake_epoch, max_fake_acc), xytext=(max_fake_epoch, max_fake_acc*0.9),
+    plt.annotate(f'Max Falsa: {max_fake_score:.4f} (Época {max_fake_epoch})',
+                xy=(max_fake_epoch, max_fake_score), xytext=(max_fake_epoch, max_fake_score*0.9),
                 arrowprops=dict(facecolor='magenta', shrink=0.05, alpha=0.7),
                 fontsize=12, color='magenta')
     
-    plt.title('Precisión del Discriminador', fontsize=18, fontweight='bold')
+    plt.title('Puntuación del Discriminador', fontsize=18, fontweight='bold')
     plt.xlabel('Épocas', fontsize=14)
-    plt.ylabel('Precisión', fontsize=14)
+    plt.ylabel('Puntuación', fontsize=14)
     plt.ylim([0, 1.05])
     plt.legend(fontsize=12)
     plt.grid(True, alpha=0.3)
     plt.tight_layout()
     
     # Guardar figura
-    plt.savefig(f"{metrics_dir}/accuracy.png", dpi=300, bbox_inches='tight')
+    plt.savefig(f"{metrics_dir}/discriminator_scores.png", dpi=300, bbox_inches='tight')
     plt.close()
     
-    # 3. Gráfico de diferencia de precisión
+    # 3. Gráfico de diferencia de puntuaciones
     plt.figure(figsize=(12, 8))
     
-    diff_acc = [r - f for r, f in zip(D_real_acc, D_fake_acc)]
+    diff_scores = [r - f for r, f in zip(D_real_scores, D_fake_scores)]
     
     # Colorear según si está balanceado o no
-    colors = ['green' if abs(d) < 0.2 else 'orange' if abs(d) < 0.4 else 'red' for d in diff_acc]
-    plt.bar(epochs, diff_acc, color=colors, alpha=0.7)
+    colors = ['green' if abs(d) < 0.2 else 'orange' if abs(d) < 0.4 else 'red' for d in diff_scores]
+    plt.bar(epochs, diff_scores, color=colors, alpha=0.7)
     
     # Línea de referencia en 0 (equilibrio perfecto)
     plt.axhline(y=0, color='blue', linestyle='-', alpha=0.5, label='Equilibrio')
@@ -216,7 +216,7 @@ def plot_training_metrics(G_losses, D_losses, D_real_acc, D_fake_acc):
     plt.axhspan(-0.4, -0.2, alpha=0.1, color='orange')
     plt.axhspan(0.2, 0.4, alpha=0.1, color='orange', label='Equilibrio aceptable')
     
-    plt.title('Diferencia de Precisión (Real - Falsa)', fontsize=18, fontweight='bold')
+    plt.title('Diferencia de Puntuación (Real - Falsa)', fontsize=18, fontweight='bold')
     plt.xlabel('Épocas', fontsize=14)
     plt.ylabel('Diferencia', fontsize=14)
     plt.ylim([-1, 1])
@@ -225,41 +225,41 @@ def plot_training_metrics(G_losses, D_losses, D_real_acc, D_fake_acc):
     plt.tight_layout()
     
     # Guardar figura
-    plt.savefig(f"{metrics_dir}/accuracy_difference.png", dpi=300, bbox_inches='tight')
+    plt.savefig(f"{metrics_dir}/discriminator_score_difference.png", dpi=300, bbox_inches='tight')
     plt.close()
     
-    # 4. Gráfico de relación pérdida-precisión
+    # 4. Gráfico de relación pérdida-puntuación
     plt.figure(figsize=(12, 8))
     
-    # Calcular precisión promedio
-    avg_acc = [(r + f) / 2 for r, f in zip(D_real_acc, D_fake_acc)]
+    # Calcular puntuación promedio
+    avg_score = [(r + f) / 2 for r, f in zip(D_real_scores, D_fake_scores)]
     
     # Scatter plot con colores según la época
-    scatter = plt.scatter(G_losses, avg_acc, c=epochs, cmap='viridis', 
+    scatter = plt.scatter(G_losses, avg_score, c=epochs, cmap='viridis', 
                          s=100, alpha=0.7, edgecolors='w', linewidth=0.5)
     
     # Añadir flechas para mostrar la dirección del entrenamiento
     for i in range(0, len(epochs)-1, max(1, len(epochs)//15)):  # Mostrar ~15 flechas
-        plt.annotate('', xy=(G_losses[i+1], avg_acc[i+1]), xytext=(G_losses[i], avg_acc[i]),
+        plt.annotate('', xy=(G_losses[i+1], avg_score[i+1]), xytext=(G_losses[i], avg_score[i]),
                     arrowprops=dict(arrowstyle='->', color='gray', alpha=0.6, lw=1.5))
     
     # Marcar inicio y fin
-    plt.scatter([G_losses[0]], [avg_acc[0]], c='blue', s=150, marker='o', label='Inicio')
-    plt.scatter([G_losses[-1]], [avg_acc[-1]], c='red', s=150, marker='*', label='Fin')
+    plt.scatter([G_losses[0]], [avg_score[0]], c='blue', s=150, marker='o', label='Inicio')
+    plt.scatter([G_losses[-1]], [avg_score[-1]], c='red', s=150, marker='*', label='Fin')
     
     # Colorbar para mostrar la época
     cbar = plt.colorbar(scatter)
     cbar.set_label('Época', fontsize=12)
     
-    plt.title('Relación Pérdida G vs. Precisión D', fontsize=18, fontweight='bold')
+    plt.title('Relación Pérdida G vs. Puntuación D', fontsize=18, fontweight='bold')
     plt.xlabel('Pérdida del Generador', fontsize=14)
-    plt.ylabel('Precisión Promedio del Discriminador', fontsize=14)
+    plt.ylabel('Puntuación Promedio del Discriminador', fontsize=14)
     plt.legend(fontsize=12)
     plt.grid(True, alpha=0.3)
     plt.tight_layout()
     
     # Guardar figura
-    plt.savefig(f"{metrics_dir}/loss_vs_accuracy.png", dpi=300, bbox_inches='tight')
+    plt.savefig(f"{metrics_dir}/loss_vs_discriminator_score.png", dpi=300, bbox_inches='tight')
     plt.close()
     
     # 5. Gráfico de convergencia
@@ -308,21 +308,21 @@ def plot_training_metrics(G_losses, D_losses, D_real_acc, D_fake_acc):
     plt.legend()
     plt.grid(True, alpha=0.3)
     
-    # Precisión
+    # Puntuación
     plt.subplot(2, 2, 2)
-    plt.plot(epochs, D_real_acc, 'r-', label='Real')
-    plt.plot(epochs, D_fake_acc, 'm-', label='Falsa')
+    plt.plot(epochs, D_real_scores, 'r-', label='Real')
+    plt.plot(epochs, D_fake_scores, 'm-', label='Falsa')
     plt.axhline(y=0.5, color='gray', linestyle='--', alpha=0.5)
-    plt.title('Precisión', fontsize=14)
+    plt.title('Puntuación', fontsize=14)
     plt.xlabel('Épocas')
-    plt.ylabel('Precisión')
+    plt.ylabel('Puntuación')
     plt.ylim([0, 1.05])
     plt.legend()
     plt.grid(True, alpha=0.3)
     
     # Diferencia
     plt.subplot(2, 2, 3)
-    plt.bar(epochs, diff_acc, color=colors, alpha=0.7)
+    plt.bar(epochs, diff_scores, color=colors, alpha=0.7)
     plt.axhline(y=0, color='blue', linestyle='-', alpha=0.5)
     plt.title('Diferencia Real-Falsa', fontsize=14)
     plt.xlabel('Épocas')
