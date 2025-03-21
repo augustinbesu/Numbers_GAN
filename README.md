@@ -15,18 +15,6 @@ Estas redes se entrenan simultáneamente, donde:
 - El generador intenta maximizar la probabilidad de que el discriminador cometa un error.
 - El discriminador intenta minimizar su error de clasificación.
 
-Matemáticamente, este juego se representa como un problema de minimización-maximización:
-
-\[
-\min_G \max_D V(D, G) = \mathbb{E}_{x \sim p_{data}(x)}[\log D(x)] + \mathbb{E}_{z \sim p_z(z)}[\log(1 - D(G(z)))]
-\]
-
-Donde:
-- \(p_{data}(x)\) es la distribución de datos reales
-- \(p_z(z)\) es la distribución del espacio latente
-- \(G(z)\) es la salida del generador para una entrada \(z\)
-- \(D(x)\) es la probabilidad que asigna el discriminador de que \(x\) sea real
-
 ### GANs para Generación de Dígitos MNIST
 
 En este proyecto, implementamos una GAN clásica con mejoras para generar imágenes de dígitos manuscritos similares a los del conjunto de datos MNIST. Nuestra implementación incluye varias mejoras sobre la GAN básica:
