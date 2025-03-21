@@ -1,7 +1,7 @@
-torch>=2.0.0
-torchvision>=0.15.0
-numpy>=1.20.0
-matplotlib>=3.5.0
-tensorboard>=2.10.0
-pillow>=9.0.0
-tqdm>=4.62.0
+--index-url https://download.pytorch.org/whl/cu118
+torch
+torchvision
+torchaudio
+matplotlib
+scikit-learn
+seaborn
