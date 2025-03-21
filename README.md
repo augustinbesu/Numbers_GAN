@@ -471,6 +471,7 @@ Improved_GAN/
 2. **Configuración**: 
    - Ajustar hiperparámetros en `config.py` según necesidades
    - El código detectará automáticamente si hay GPU disponible:
+     
    ```python
    DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
    ```
