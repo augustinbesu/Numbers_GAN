@@ -17,13 +17,15 @@ Estas redes se entrenan simultáneamente, donde:
 
 Matemáticamente, este juego se representa como un problema de minimización-maximización:
 
-min_G max_D V(D, G) = E_{x ~ p_data(x)}[log D(x)] + E_{z ~ p_z(z)}[log(1 - D(G(z)))]
+\[
+\min_G \max_D V(D, G) = \mathbb{E}_{x \sim p_{data}(x)}[\log D(x)] + \mathbb{E}_{z \sim p_z(z)}[\log(1 - D(G(z)))]
+\]
 
 Donde:
-- p_data(x) es la distribución de datos reales
-- p_z(z) es la distribución del espacio latente (típicamente ruido aleatorio)
-- G(z) es la salida del generador para una entrada z
-- D(x) es la probabilidad que asigna el discriminador de que x sea real
+- \(p_{data}(x)\) es la distribución de datos reales
+- \(p_z(z)\) es la distribución del espacio latente
+- \(G(z)\) es la salida del generador para una entrada \(z\)
+- \(D(x)\) es la probabilidad que asigna el discriminador de que \(x\) sea real
 
 ### GANs para Generación de Dígitos MNIST
 
