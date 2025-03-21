@@ -224,7 +224,7 @@ Los hiperparámetros clave que controlan el comportamiento del modelo son:
 
 - **Épocas (EPOCHS)**: 200
   - Número total de pasadas completas sobre el conjunto de datos
-  - Suficientes para permitir la convergencia del modelo
+  - Suficientes para permitir la convergencia del modelo. Comentar que realmente con menos se han visto resultados semejantes.
 
 - **Intervalo de Muestreo (SAMPLE_INTERVAL)**: 10
   - Cada cuántas épocas se generan imágenes de muestra
