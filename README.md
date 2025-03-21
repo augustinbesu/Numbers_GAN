@@ -387,6 +387,8 @@ Hemos desarrollado una interfaz gráfica (app.py) que permite:
 3. Mostrar la clasificación del dígito
 4. Mantener estadísticas de precisión del discriminador
 
+Mencionar que es preferible usar el modo a pantalla completa.
+
 ## Espacio Latente y Generación
 
 El espacio latente de dimensión 100 funciona como el "espacio creativo" del generador. Cada punto en este espacio corresponde a una imagen generada. En nuestro modelo, este vector de ruido aleatorio se transforma a través de una serie de capas hasta generar una imagen de 28×28 píxeles.
