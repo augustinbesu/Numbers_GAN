@@ -427,6 +427,8 @@ def weights_init_normal(m):
 - Clasificación auxiliar para mejorar las características aprendidas
 - Dropout en el discriminador para prevenir sobreajuste
 
+Cabe mencionar que, con esta implementación, el conjunto de datos MNIST no requiere un número elevado de épocas de entrenamiento para obtener resultados razonablemente precisos. No obstante, si se trabajara con imágenes de mayor complejidad, el proceso de entrenamiento sería significativamente más exigente.
+
 ### Trabajo Futuro
 Como mejora futura, se planea implementar una versión WGAN (Wasserstein GAN) con Penalización de Gradiente. Esta variante ofrece varias ventajas sobre el enfoque GAN clásico actual:
 - Mayor estabilidad durante el entrenamiento
