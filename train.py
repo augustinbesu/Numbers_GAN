@@ -17,18 +17,12 @@ from evaluation import (
 )
 from config import (
     LATENT_DIM, BATCH_SIZE, EPOCHS, SAMPLE_INTERVAL,
-    DEVICE, IMAGES_DIR, MODELS_DIR, EVALUATION_DIR
+    DEVICE, IMAGES_DIR, MODELS_DIR, EVALUATION_DIR, LR_G, LR_D, BETA1, BETA2
 )
-
-# Parámetros de la GAN clásica
-LEARNING_RATE_G = 0.0002
-LEARNING_RATE_D = 0.0002
-BETA1 = 0.5
-BETA2 = 0.999
 
 def train():
     print(f"Usando dispositivo: {DEVICE}")
-    print("Implementación clásica de GAN con mejoras")
+    print("Inicio del entrenamiento de la GAN para MNIST...")
     
     # Crear directorios
     create_directories()
@@ -49,8 +43,8 @@ def train():
     discriminator.apply(weights_init_normal)
 
     # Optimizadores - Adam estándar para GANs
-    optimizer_G = optim.Adam(generator.parameters(), lr=LEARNING_RATE_G, betas=(BETA1, BETA2))
-    optimizer_D = optim.Adam(discriminator.parameters(), lr=LEARNING_RATE_D, betas=(BETA1, BETA2))
+    optimizer_G = optim.Adam(generator.parameters(), lr=LR_G, betas=(BETA1, BETA2))
+    optimizer_D = optim.Adam(discriminator.parameters(), lr=LR_D, betas=(BETA1, BETA2))
 
     # Funciones de pérdida
     adversarial_loss = nn.BCELoss()

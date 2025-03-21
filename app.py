@@ -175,6 +175,7 @@ class GANEvaluationApp:
         # Determinar la predicción del discriminador
         # Si confianza > 0.5, el discriminador cree que es real
         # Si confianza < 0.5, el discriminador cree que es falsa
+        # Al fin y al cabo hay que jugar con el umbral hasta que estemos satisfechos con el resultado
         discriminator_thinks_real = self.current_image["confidence"] > 0.5
         
         # Determinar si el discriminador acertó
